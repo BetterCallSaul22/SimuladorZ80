@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.TextFlow?>
+
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="z80box.z80box.ScenesController">
+   <right>
+      <VBox prefHeight="720.0" prefWidth="358.0" spacing="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="memoryLoad" alignment="BOTTOM_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="323.0" style="-fx-background-color: hotpink;" text="CARGA A MEMORIA" VBox.vgrow="ALWAYS"
+               onAction="#switchToHexLoad">
+               <VBox.margin>
+                  <Insets top="100.0" />
+               </VBox.margin>
+               <padding>
+                  <Insets top="100.0" />
+               </padding>
+            </Button>
+            <Button fx:id="memoryHandler" alignment="BOTTOM_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="323.0" style="-fx-background-color: hotpink;" text="MANEJO DE MEMORIA">
+               <padding>
+                  <Insets top="100.0" />
+               </padding>
+            </Button>
+            <Button fx:id="disassembly" alignment="BOTTOM_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: hotpink;" text="DESENSAMBLADO">
+               <padding>
+                  <Insets top="100.0" />
+               </padding>
+            </Button>
+            <Button fx:id="execution" alignment="BOTTOM_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: hotpink;" text="EJECUCIÓN">
+               <padding>
+                  <Insets top="100.0" />
+               </padding>
+            </Button>
+         </children>
+         <padding>
+            <Insets right="35.0" top="35.0" />
+         </padding>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+      </VBox>
+   </right>
+   <center>
+      <FlowPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="732.0" fitWidth="725.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@Z80Box.PNG" />
+               </image>
+               <viewport>
+                  <Rectangle2D />
+               </viewport>
+            </ImageView>
+         </children>
+      </FlowPane>
+   </center>
+   <bottom>
+      <TextFlow prefHeight="27.0" prefWidth="1080.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label style="-fx-text-fill: hotpink;" text="Proyecto hecho por Alfonso Rodríguez, Emilia Macarena, Claudia Barco, Bárbara Juárez">
+               <padding>
+                  <Insets left="5.0" top="5.0" />
+               </padding>
+               <font>
+                  <Font size="27.0" />
+               </font>
+            </Label>
+         </children>
+      </TextFlow>
+   </bottom>
+</BorderPane>
