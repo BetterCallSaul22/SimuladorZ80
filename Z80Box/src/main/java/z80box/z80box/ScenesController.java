@@ -12,9 +12,12 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-
+// Este se podría considerar el controlador de escenas "madre".
 public class ScenesController {
+    // Creamos un cargador universal.
     FXMLLoader fxmlLoader;
+
+    //Este metodo nos cambia al menú de carga de memoria.
     @FXML
     public void switchToHexLoad(ActionEvent event) throws IOException {
 
@@ -25,6 +28,7 @@ public class ScenesController {
         stage.setScene(scene);
         stage.show();
     }
+    //Este metodo nos cambia al menú de desensamblado.
     @FXML
     public void switchToDisassembly(ActionEvent event) throws IOException {
         fxmlLoader = new FXMLLoader(Z80App.class.getResource("Z80Disassemble.fxml"));
