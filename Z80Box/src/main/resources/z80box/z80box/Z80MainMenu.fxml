@@ -18,7 +18,7 @@
    <right>
       <VBox prefHeight="720.0" prefWidth="358.0" spacing="100.0" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="memoryLoad" alignment="BOTTOM_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="323.0" style="-fx-background-color: hotpink;" text="CARGA A MEMORIA" VBox.vgrow="ALWAYS"
+            <Button fx:id="memoryLoad" alignment="BOTTOM_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="323.0" style="-fx-background-color: hotpink;" text="CARGA A MEMORIA"
                onAction="#switchToHexLoad">
                <VBox.margin>
                   <Insets top="100.0" />
@@ -32,7 +32,8 @@
                   <Insets top="100.0" />
                </padding>
             </Button>
-            <Button fx:id="disassembly" alignment="BOTTOM_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: hotpink;" text="DESENSAMBLADO">
+            <Button fx:id="disassembly" alignment="BOTTOM_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: hotpink;" text="DESENSAMBLADO"
+                    onAction="#switchToDisassembly">
                <padding>
                   <Insets top="100.0" />
                </padding>

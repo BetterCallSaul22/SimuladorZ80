@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -10,15 +11,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" spacing="50.0" style="-fx-background-color: black; -fx-border-color: hotpink; -fx-border-style: solid; -fx-border-width: 6;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="z80box.z80box.MemoryLoadController" onKeyPressed="#backToMainMenu">
+    fx:controller="z80box.z80box.DisassemblyController" onKeyPressed="#backToMainMenu">
    <children>
-      <Button fx:id="hexFileSelect" mnemonicParsing="false" prefHeight="100.0" prefWidth="500.0" style="-fx-background-color: hotpink;" text="Elegir archivo" textAlignment="JUSTIFY" VBox.vgrow="ALWAYS" onAction="#selectAFile">
-         <font>
-            <Font name="Lucida Console" size="41.0" />
-         </font>
-      </Button>
       <GridPane hgap="10.0" prefHeight="107.0" prefWidth="1078.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -28,12 +23,12 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label pickOnBounds="false" prefHeight="47.0" prefWidth="661.0" text="Insertar dirección donde se ubicará el código:" textFill="HOTPINK" textOverrun="CLIP">
+            <Label pickOnBounds="false" prefHeight="47.0" prefWidth="661.0" text="Insertar dirección donde se leerá el código: " textFill="HOTPINK" textOverrun="CLIP">
                <font>
                   <Font name="Lucida Console" size="23.5" />
                </font>
             </Label>
-            <TextField fx:id="hexField" alignment="CENTER" prefHeight="61.0" prefWidth="429.0" promptText="0000" style="-fx-background-color: hotpink;" GridPane.columnIndex="1" onKeyPressed="#loadHexToMemory">
+            <TextField fx:id="hexField" alignment="CENTER" prefHeight="61.0" prefWidth="429.0" promptText="0000" style="-fx-background-color: hotpink;" GridPane.columnIndex="1">
                <font>
                   <Font name="Courier New" size="45.0" />
                </font>
@@ -43,20 +38,21 @@
             <Insets left="100.0" right="100.0" />
          </padding>
       </GridPane>
-      <Label fx:id="errorDisplayer" textFill="RED">
+      <Label textFill="RED">
          <font>
             <Font name="Courier New" size="28.0" />
          </font>
       </Label>
-      <Label text="Enter: Confirmar dirección" textFill="HOTPINK">
-         <font>
-            <Font name="Lucida Console" size="40.0" />
-         </font>
-      </Label>
-      <Label text="Escape: Salir sin guardar" textFill="HOTPINK">
-         <font>
-            <Font name="Lucida Console" size="40.0" />
-         </font>
-      </Label>
+      <ScrollPane maxWidth="-Infinity" prefHeight="390.0" prefWidth="605.0" style="-fx-background-color: black;">
+         <cursor>
+            <Cursor fx:constant="NONE" />
+         </cursor>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <content>
+            <VBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="605.0" style="-fx-background-color: hotpink; -fx-border-style: dotted; -fx-border-color: crimson; -fx-border-width: 10;" />
+         </content>
+      </ScrollPane>
    </children>
 </VBox>

@@ -8,6 +8,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class Z80App extends Application {
+
+    public static Memory memoria = new Memory();
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(Z80App.class.getResource("Z80MainMenu.fxml"));
@@ -20,4 +22,10 @@ public class Z80App extends Application {
     public static void main(String[] args) {
         launch();
     }
+
+    /*public static void initialize(){
+
+    }
+
+     */
 }
