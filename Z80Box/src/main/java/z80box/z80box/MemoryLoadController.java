@@ -27,7 +27,7 @@ public class MemoryLoadController {
     // Esta clase tiene un atributo de archivo que nos permitirá ver
     // si el usuario tiene un archivo seleccionado a la hora de
     // poner una dirección hexadecimal.
-    File selectedHexFile;
+    File selectedHexFile = null;
 
     // Este es un objeto de tipo Label que nos permitirá indicar al
     // usuario el estado de lo que está ocurriendo.
@@ -78,6 +78,7 @@ public class MemoryLoadController {
     public void loadHexToMemory(KeyEvent event) throws IOException {
         // Si el campo NO está vacío y se presiona ENTER, se ejecuta el resto del código.
         if(!hexField.getText().isEmpty() && event.getCode() == KeyCode.ENTER){
+            System.out.println(selectedHexFile);
             // Si el archivo no ha sido seleccionado, procede este bloque.
             if(selectedHexFile == null){
                 // Mostramos un error al usuario.
@@ -146,13 +147,13 @@ public class MemoryLoadController {
                     // Limpiamos el campo de introducción de datos.
                     hexField.clear();
                 }
-
+                // Imprimimos memoria; para debuggear.
+                // Indicamos al usuario que hubo éxito.
+                errorDisplayer.setTextFill(Color.GREEN);
+                errorDisplayer.setText("¡Archivo exitosamente cargado!");
             }
-            // Imprimimos memoria; para debuggear.
             Z80App.memoria.imprimirMemoria();
-            // Indicamos al usuario que hubo éxito.
-            errorDisplayer.setTextFill(Color.GREEN);
-            errorDisplayer.setText("¡Archivo exitosamente cargado!");
+            selectedHexFile = null;
         // Si el campo está vacío y se presiona enter, damos a entender que se necesita una dirección.
         }else if(hexField.getText().isEmpty() && event.getCode() == KeyCode.ENTER){
             errorDisplayer.setTextFill(Color.RED);

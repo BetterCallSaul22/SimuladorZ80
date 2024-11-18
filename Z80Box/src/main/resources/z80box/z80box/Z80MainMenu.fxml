@@ -12,36 +12,44 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.TextFlow?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="z80box.z80box.ScenesController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="z80box.z80box.ScenesController">
    <right>
-      <VBox prefHeight="720.0" prefWidth="358.0" spacing="100.0" BorderPane.alignment="CENTER">
+      <VBox prefHeight="561.0" prefWidth="358.0" spacing="100.0" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="memoryLoad" alignment="BOTTOM_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="323.0" style="-fx-background-color: hotpink;" text="CARGA A MEMORIA"
-               onAction="#switchToHexLoad">
+            <Button fx:id="memoryLoad" alignment="TOP_CENTER" contentDisplay="TOP" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#switchToHexLoad" prefHeight="75.0" prefWidth="323.0" style="-fx-background-color: hotpink;" text="CARGA A MEMORIA" textAlignment="CENTER" VBox.vgrow="ALWAYS">
                <VBox.margin>
-                  <Insets top="100.0" />
+                  <Insets />
                </VBox.margin>
+               <font>
+                  <Font name="Courier New Bold" size="29.0" />
+               </font>
                <padding>
-                  <Insets top="100.0" />
+                  <Insets top="25.0" />
                </padding>
             </Button>
-            <Button fx:id="memoryHandler" alignment="BOTTOM_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="323.0" style="-fx-background-color: hotpink;" text="MANEJO DE MEMORIA">
+            <Button fx:id="memoryHandler" alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" minHeight="-Infinity" mnemonicParsing="false" prefHeight="75.0" prefWidth="323.0" style="-fx-background-color: hotpink;" text="MANEJO DE MEMORIA" onAction="#switchToMemoryHandling">
                <padding>
-                  <Insets top="100.0" />
+                  <Insets top="25.0" />
                </padding>
+               <font>
+                  <Font name="Courier New Bold" size="29.0" />
+               </font>
             </Button>
-            <Button fx:id="disassembly" alignment="BOTTOM_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: hotpink;" text="DESENSAMBLADO"
-                    onAction="#switchToDisassembly">
+            <Button fx:id="disassembly" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" mnemonicParsing="false" onAction="#switchToDisassembly" prefHeight="75.0" prefWidth="323.0" style="-fx-background-color: hotpink;" text="DESENSAMBLADO">
                <padding>
-                  <Insets top="100.0" />
+                  <Insets top="25.0" />
                </padding>
+               <font>
+                  <Font name="Courier New Bold" size="31.0" />
+               </font>
             </Button>
-            <Button fx:id="execution" alignment="BOTTOM_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: hotpink;" text="EJECUCIÓN">
+            <Button fx:id="execution" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="75.0" prefWidth="323.0" style="-fx-background-color: hotpink;" text="EJECUCIÓN">
                <padding>
-                  <Insets top="100.0" />
+                  <Insets top="25.0" />
                </padding>
+               <font>
+                  <Font name="Courier New Bold" size="35.0" />
+               </font>
             </Button>
          </children>
          <padding>

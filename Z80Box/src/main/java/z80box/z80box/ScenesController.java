@@ -39,5 +39,16 @@ public class ScenesController {
         stage.show();
     }
 
+    //Este metodo nos cambia al menú de desensamblado.
+    @FXML
+    public void switchToMemoryHandling(ActionEvent event) throws IOException {
+        fxmlLoader = new FXMLLoader(Z80App.class.getResource("Z80MemoryHandlerMenu.fxml"));
+        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(fxmlLoader.load());
+        stage.setTitle("Manejo de memoria");
+        stage.setScene(scene);
+        stage.show();
+    }
+
 
 }
