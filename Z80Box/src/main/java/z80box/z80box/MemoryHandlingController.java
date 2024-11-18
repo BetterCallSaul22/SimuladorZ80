@@ -72,7 +72,7 @@ public class MemoryHandlingController {
                     memoryVisualizer.getChildren().clear();
                     //  Comenzamos con un ciclo for anidado para llenar todos los espacios.
                     for(int i=0;i<33;i++){
-                        for(int j=0;j<16;j++){
+                        for(int j=0;j<17;j++){
                             // Dejamos un espacio libre en la esquina izquierda.
                             if(i==0 && j == 0){
                                 j+=1;
@@ -80,10 +80,10 @@ public class MemoryHandlingController {
                             // Condicional que nos permite poner los valores unitarios en la fila superior.
                             if(i==0){
                                 // Creamos un nuevo cuadro de texto
-                                Label label = new Label(String.valueOf(j));
+                                Label label = new Label(String.valueOf(j-1));
                                 // Convertimos a hexadecimal en el caso de 10 hasta 15.
-                                if(j>9){
-                                    label.setText(Miscellaneous.returnHexEquivalent(j));
+                                if(j>10){
+                                    label.setText(Miscellaneous.returnHexEquivalent(j-1));
                                 }
                                 // Monerías visuales.
                                 label.setTextFill(Color.HOTPINK);
@@ -115,18 +115,20 @@ public class MemoryHandlingController {
                 }
             }
         });
+        memoryPaginator.setCurrentPageIndex(currentPage);
+
         // Este código es idéntico al del escuchador, pero se pone para que se inicialicen los valores
         // según se necesite.
         for(int i=0;i<33;i++){
-            for(int j=0;j<16;j++){
+            for(int j=0;j<17;j++){
                 if(i==0 && j == 0){
                     j+=1;
                 }
 
                 if(i==0){
-                    Label label = new Label(String.valueOf(j));
-                    if(j>9){
-                        label.setText(Miscellaneous.returnHexEquivalent(j));
+                    Label label = new Label(String.valueOf(j-1));
+                    if(j>10){
+                        label.setText(Miscellaneous.returnHexEquivalent(j-1));
                     }
                     label.setTextFill(Color.HOTPINK);
                     label.setAlignment(Pos.CENTER);
@@ -168,6 +170,12 @@ public class MemoryHandlingController {
                     // Si la entrada es mayor que 2, arrojamos una excepción
                     if(textField.getText().length() > 2){
                         throw new Exception();
+                    }else if(textField.getText().isEmpty()){
+                        throw new Exception();
+                    }
+
+                    if(textField.getText().length() == 1){
+                        textField.setText("0" + textField.getText());
                     }
                     // Si no hay excepciones, adjuntamos el valor que se requiere a la memoria
                     // del programa.

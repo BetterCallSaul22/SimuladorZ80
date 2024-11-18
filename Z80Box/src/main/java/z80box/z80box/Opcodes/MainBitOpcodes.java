@@ -1,7 +1,7 @@
 package z80box.z80box.Opcodes;
 import java.util.HashMap;
 public class MainBitOpcodes {
-    HashMap<String, String> instructions = new HashMap<>() {{
+    HashMap<String, String> opCodes = new HashMap<>() {{
         put("BC 00", "RLC B");
         put("BC 01", "RLC C");
         put("BC 02", "RLC D");

@@ -1,7 +1,7 @@
 package z80box.z80box.Opcodes;
 import java.util.HashMap;
 public class MainTableOpcodes {
-    public static final HashMap<String, String> OPCODES = new HashMap<>() {{
+    public static final HashMap<String, String> opCodes = new HashMap<>() {{
         put("00", "NOP");
         put("01", "LD BC,NN");
         put("02", "LD (BC),A");
