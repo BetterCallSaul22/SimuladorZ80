@@ -15,7 +15,7 @@ fx:controller="z80box.z80box.MemoryHandlingController" onKeyPressed="#backToMain
    </bottom>
    <center>
       <GridPane style="-fx-background-color: black; -fx-border-color: hotpink; -fx-border-width: 1;" BorderPane.alignment="CENTER"
-      fx:id="memoryVisualizer" gridLinesVisible="true">
+      fx:id="memoryVisualizer" gridLinesVisible="true" onKeyPressed="#changeFieldValue">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
