@@ -43,7 +43,7 @@
                   <Font name="Courier New Bold" size="31.0" />
                </font>
             </Button>
-            <Button fx:id="execution" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="75.0" prefWidth="323.0" style="-fx-background-color: hotpink;" text="EJECUCIÓN">
+            <Button fx:id="execution" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="75.0" prefWidth="323.0" style="-fx-background-color: hotpink;" text="EJECUCIÓN" onAction="#switchToExecutionPrelude">
                <padding>
                   <Insets top="25.0" />
                </padding>

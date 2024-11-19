@@ -78,7 +78,6 @@ public class MemoryLoadController {
     public void loadHexToMemory(KeyEvent event) throws IOException {
         // Si el campo NO está vacío y se presiona ENTER, se ejecuta el resto del código.
         if(!hexField.getText().isEmpty() && event.getCode() == KeyCode.ENTER){
-            System.out.println(selectedHexFile);
             // Si el archivo no ha sido seleccionado, procede este bloque.
             if(selectedHexFile == null){
                 // Mostramos un error al usuario.
@@ -133,6 +132,8 @@ public class MemoryLoadController {
                             }
                         }
                     }
+                    errorDisplayer.setTextFill(Color.GREEN);
+                    errorDisplayer.setText("¡Archivo exitosamente cargado!");
                 // Excepción en caso de que no se pueda leer el archivo.
                 }catch(IOException e){
                     errorDisplayer.setTextFill(Color.RED);
@@ -141,18 +142,18 @@ public class MemoryLoadController {
                 }catch(InvalidHexDirectionException e){
                     errorDisplayer.setTextFill(Color.RED);
                     errorDisplayer.setText("La dirección introducida es incorrecta.");
-                }finally{
+                }catch(NumberFormatException e){
+                    errorDisplayer.setTextFill(Color.RED);
+                    errorDisplayer.setText("La cadena introducida no es hexadecimal.");
+                }
+                finally{
                     // Cerramos el lector de archivos.
                     br.close();
                     // Limpiamos el campo de introducción de datos.
                     hexField.clear();
                 }
-                // Imprimimos memoria; para debuggear.
                 // Indicamos al usuario que hubo éxito.
-                errorDisplayer.setTextFill(Color.GREEN);
-                errorDisplayer.setText("¡Archivo exitosamente cargado!");
             }
-            Z80App.memoria.imprimirMemoria();
             selectedHexFile = null;
         // Si el campo está vacío y se presiona enter, damos a entender que se necesita una dirección.
         }else if(hexField.getText().isEmpty() && event.getCode() == KeyCode.ENTER){

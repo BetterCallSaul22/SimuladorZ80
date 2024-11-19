@@ -50,5 +50,15 @@ public class ScenesController {
         stage.show();
     }
 
+    @FXML
+    public void switchToExecutionPrelude(ActionEvent event) throws IOException {
+        fxmlLoader = new FXMLLoader(Z80App.class.getResource("Z80ExecutionPrelude.fxml"));
+        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(fxmlLoader.load());
+        stage.setTitle("Preparación para ejecución.");
+        stage.setScene(scene);
+        stage.show();
+    }
+
 
 }

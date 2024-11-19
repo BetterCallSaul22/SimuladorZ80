@@ -70,67 +70,38 @@ public class DisassemblyController {
                 String instruction;
                 do {
                     String currentOpcode = Z80App.memoria.m[initRow][initColumn];
-                    if ((initColumn + 1) % 16 == 0) {
-                        nextOpcode = Z80App.memoria.m[initRow + 1][0];
-                    } else {
-                        nextOpcode = Z80App.memoria.m[initRow][initColumn + 1];
-                    }
+                    nextOpcode = Z80App.memoria.m[Miscellaneous.rowPosition(initRow, initColumn, 1)]
+                            [Miscellaneous.columnPosition(initColumn, 1)];
 
                     if (currentOpcode.startsWith("CB")) {
                         instruction = Instruction.findBitTableInstruction(nextOpcode);
-                        if ((initColumn + 1) % 16 == 0) {
-                            initColumn = 1;
-                            initRow += 1;
-                        } else {
-                            initColumn += 1;
-                        }
+                        initRow = Miscellaneous.rowPosition(initRow, initColumn, 1);
+                        initColumn = Miscellaneous.columnPosition(initColumn, 1);
                     } else if (Objects.equals((currentOpcode + nextOpcode), "DDCB")) {
-                        instruction = Instruction.findIXBitTableInstruction(currentOpcode);
-                        if ((initColumn + 1) % 16 == 0) {
-                            initColumn = 1;
-                            initRow += 1;
-                        } else if ((initColumn + 2) % 16 == 0) {
-                            initColumn = 1;
-                            initRow += 1;
-                        } else {
-                            initColumn += 2;
-                        }
+                        nextOpcode = Z80App.memoria.m[Miscellaneous.rowPosition(initRow, initColumn, 2)]
+                                [Miscellaneous.columnPosition(initColumn, 2)];
+                        instruction = Instruction.findIXBitTableInstruction(nextOpcode);
+                        initRow = Miscellaneous.rowPosition(initRow, initColumn, 2);
+                        initColumn = Miscellaneous.columnPosition(initColumn, 2);
                     } else if (Objects.equals((currentOpcode + nextOpcode), "FDCB")) {
+                        nextOpcode = Z80App.memoria.m[Miscellaneous.rowPosition(initRow, initColumn, 2)]
+                                [Miscellaneous.columnPosition(initColumn, 2)];
                         instruction = Instruction.findIYBitTableInstruction(currentOpcode);
-                        if ((initColumn + 1) % 16 == 0) {
-                            initColumn = 1;
-                            initRow += 1;
-                        } else if ((initColumn + 2) % 16 == 0) {
-                            initColumn = 1;
-                            initRow += 1;
-                        } else {
-                            initColumn += 2;
-                        }
+                        initRow = Miscellaneous.rowPosition(initRow, initColumn, 2);
+                        initColumn = Miscellaneous.columnPosition(initColumn, 2);
                     } else if (currentOpcode.startsWith("DD")) {
                         instruction = Instruction.findIXTableInstruction(nextOpcode);
-                        if ((initColumn + 1) % 16 == 0) {
-                            initColumn = 1;
-                            initRow += 1;
-                        } else {
-                            initColumn += 1;
-                        }
+                        initRow = Miscellaneous.rowPosition(initRow, initColumn, 1);
+                        initColumn = Miscellaneous.columnPosition(initColumn, 1);
                         currentOpcode = Z80App.memoria.m[initRow][initColumn];
                     } else if (currentOpcode.startsWith("FD")) {
                         instruction = Instruction.findIYTableInstruction(nextOpcode);
-                        if ((initColumn + 1) % 16 == 0) {
-                            initColumn = 1;
-                            initRow += 1;
-                        } else {
-                            initColumn += 1;
-                        }
+                        initRow = Miscellaneous.rowPosition(initRow, initColumn, 1);
+                        initColumn = Miscellaneous.columnPosition(initColumn, 1);
                     }else if(currentOpcode.startsWith("ED")){
                         instruction = Instruction.findMiscTableInstruction(nextOpcode);
-                        if ((initColumn + 1) % 16 == 0) {
-                            initColumn = 1;
-                            initRow += 1;
-                        }else{
-                            initColumn += 1;
-                        }
+                        initRow = Miscellaneous.rowPosition(initRow, initColumn, 1);
+                        initColumn = Miscellaneous.columnPosition(initColumn, 1);
                     }else {
                         instruction = Instruction.findMainTableInstruction(currentOpcode);
                     }
@@ -142,25 +113,15 @@ public class DisassemblyController {
                     System.out.println("LOOP START ROW = " + initRow + " LOOP START COLUMN = " + initColumn );
                     if (instruction.endsWith(",N") || instruction.endsWith(" N")|| instruction.endsWith(",D")) {
                         instruction = instruction.substring(0, instruction.length() - 2);
-                        if (initRow == 2047 && initColumn == 15) {
-                            initRow = 0;
-                            initColumn = 0;
-                            // De llegar al final de una fila, pasamos a la siguiente.
-                        } else if (initColumn == 15) {
-                            initRow += 1;
-                            initColumn = 0;
-                            // Si no ocurre ninguno de los dos casos, pasamos a la siguiente columna.
-                        } else {
-                            initColumn += 1;
-                        }
+                        initRow = Miscellaneous.rowPosition(initRow, initColumn, 1);
+                        initColumn = Miscellaneous.columnPosition(initColumn, 1);
                         instruction = instruction + Z80App.memoria.m[initRow][initColumn];
                     } else if (instruction.endsWith(",(NN)")) {
                         instruction = instruction.replace("(NN)", "");
-                        if ((initColumn + 1) % 16 <= 1) {
-                            nextRow = 1;
-                        }
-                        int base10Direction = Miscellaneous.calculateOverallStartValue(Z80App.memoria.m[initRow + nextRow][(initColumn + 2) % 16]
-                                + Z80App.memoria.m[initRow + nextRow][(initColumn + 1) % 16]);
+                        initRow = Miscellaneous.rowPosition(initRow, initColumn, 2);
+                        initColumn = Miscellaneous.columnPosition(initColumn, 2);
+                        int base10Direction = Miscellaneous.calculateOverallStartValue(Z80App.memoria.m[initRow][initColumn]
+                                + Z80App.memoria.m[initRow][(initColumn - 1) % 16]);
                         int directionColumn = base10Direction%16;
                         int directionRow = base10Direction/16;
                         instruction += Z80App.memoria.m[directionRow][directionColumn];

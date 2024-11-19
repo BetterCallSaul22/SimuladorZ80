@@ -18,4 +18,20 @@ public class Miscellaneous {
             default -> null;
         };
     }
+
+    static int columnPosition(int column, int spacesToMove){
+        if(column + spacesToMove >= 16){
+            return (column+spacesToMove)%16;
+        }else{
+            return column+spacesToMove;
+        }
+    }
+
+    static int rowPosition(int row, int column, int spacesToMove){
+        if(column + spacesToMove >= 16){
+            return row + 1;
+        }else{
+            return row;
+        }
+    }
 }
