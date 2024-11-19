@@ -237,6 +237,7 @@ public class MainTableOpcodes {
         put("EA", "JP PE,NN");
         put("EB", "EX DE,HL");
         put("EC", "CALL PE,NN");
+        put("ED", "LDI");
         put("EE", "XOR N");
         put("EF", "RST 28H");
         put("F0", "RET P");
