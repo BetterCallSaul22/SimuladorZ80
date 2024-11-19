@@ -104,7 +104,7 @@ public class MemoryLoadController {
                     // Definimos el renglón en el que empezamos.
                     int initRow = startDir/16;
                     // Definimos la columna en la que empezamos.
-                    int finRow = startDir%16;
+                    int initColumn = startDir%16;
                     // Ciclo while que lee todas las líneas del archivo.
                     while((input = br.readLine()) != null){
                         // Como los HEX tienen un patrón, creamos una subcadena con la
@@ -118,18 +118,18 @@ public class MemoryLoadController {
                         }
                         for(int i = 0;i<individual_HexCodes.size();i++){
                             // Cargamos la instrucción en cuestión al espacio encontrado.
-                            Z80App.memoria.m[initRow][finRow] = individual_HexCodes.get(i);
+                            Z80App.memoria.m[initRow][initColumn] = individual_HexCodes.get(i);
                             // Si llegamos al final de la memoria, regresamos al principio.
-                            if(initRow == 2047 && finRow == 15){
+                            if(initRow == 2047 && initColumn == 15){
                                 initRow = 0;
-                                finRow = 0;
+                                initColumn = 0;
                             // De llegar al final de una fila, pasamos a la siguiente.
-                            }else if(finRow == 15){
+                            }else if(initColumn == 15){
                                 initRow += 1;
-                                finRow = 0;
+                                initColumn = 0;
                             // Si no ocurre ninguno de los dos casos, pasamos a la siguiente columna.
                             }else{
-                                finRow += 1;
+                                initColumn += 1;
                             }
                         }
                     }

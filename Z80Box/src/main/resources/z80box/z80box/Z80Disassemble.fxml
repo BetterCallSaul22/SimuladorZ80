@@ -28,7 +28,8 @@
                   <Font name="Lucida Console" size="23.5" />
                </font>
             </Label>
-            <TextField fx:id="hexField" alignment="CENTER" prefHeight="61.0" prefWidth="429.0" promptText="0000" style="-fx-background-color: hotpink;" GridPane.columnIndex="1">
+            <TextField fx:id="hexField" alignment="CENTER" prefHeight="61.0" prefWidth="429.0" promptText="0000" style="-fx-background-color: hotpink;" GridPane.columnIndex="1"
+            onKeyPressed="#disassemble">
                <font>
                   <Font name="Courier New" size="45.0" />
                </font>
@@ -38,20 +39,18 @@
             <Insets left="100.0" right="100.0" />
          </padding>
       </GridPane>
-      <Label textFill="RED">
+      <Label textFill="RED" fx:id="errorDisplayer">
          <font>
             <Font name="Courier New" size="28.0" />
          </font>
       </Label>
-      <ScrollPane maxWidth="-Infinity" prefHeight="390.0" prefWidth="605.0" style="-fx-background-color: black;">
-         <cursor>
-            <Cursor fx:constant="NONE" />
-         </cursor>
+      <ScrollPane maxWidth="-Infinity" prefHeight="390.0" prefWidth="605.0" style="-fx-background-color: black;" fitToWidth="true" pannable="true">
          <opaqueInsets>
             <Insets />
          </opaqueInsets>
          <content>
-            <VBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="605.0" style="-fx-background-color: hotpink; -fx-border-style: dotted; -fx-border-color: crimson; -fx-border-width: 10;" />
+            <VBox alignment="CENTER_LEFT" minHeight="400.0" minWidth="-Infinity" prefWidth="605.0" style="-fx-background-color: hotpink; -fx-border-style: dotted; -fx-border-color: crimson; -fx-border-width: 10;"
+            fx:id="disassemblyVisualizer" VBox.vgrow="ALWAYS"/>
          </content>
       </ScrollPane>
    </children>
