@@ -22,14 +22,18 @@ public class Miscellaneous {
     static int columnPosition(int column, int spacesToMove){
         if(column + spacesToMove >= 16){
             return (column+spacesToMove)%16;
+        }else if(column + spacesToMove < 0){
+            return column+spacesToMove+16;
         }else{
-            return column+spacesToMove;
+            return column + spacesToMove;
         }
     }
 
     static int rowPosition(int row, int column, int spacesToMove){
         if(column + spacesToMove >= 16){
             return row + 1;
+        }else if( column + spacesToMove < 0){
+            return row - 1;
         }else{
             return row;
         }

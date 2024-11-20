@@ -74,35 +74,42 @@ public class DisassemblyController {
                             [Miscellaneous.columnPosition(initColumn, 1)];
 
                     if (currentOpcode.startsWith("CB")) {
+                        System.out.println("CB");
                         instruction = Instruction.findBitTableInstruction(nextOpcode);
                         initRow = Miscellaneous.rowPosition(initRow, initColumn, 1);
                         initColumn = Miscellaneous.columnPosition(initColumn, 1);
                     } else if (Objects.equals((currentOpcode + nextOpcode), "DDCB")) {
+                        System.out.println("DD CB");
                         nextOpcode = Z80App.memoria.m[Miscellaneous.rowPosition(initRow, initColumn, 2)]
                                 [Miscellaneous.columnPosition(initColumn, 2)];
                         instruction = Instruction.findIXBitTableInstruction(nextOpcode);
                         initRow = Miscellaneous.rowPosition(initRow, initColumn, 2);
                         initColumn = Miscellaneous.columnPosition(initColumn, 2);
                     } else if (Objects.equals((currentOpcode + nextOpcode), "FDCB")) {
+                        System.out.println("FD CB");
                         nextOpcode = Z80App.memoria.m[Miscellaneous.rowPosition(initRow, initColumn, 2)]
                                 [Miscellaneous.columnPosition(initColumn, 2)];
                         instruction = Instruction.findIYBitTableInstruction(currentOpcode);
                         initRow = Miscellaneous.rowPosition(initRow, initColumn, 2);
                         initColumn = Miscellaneous.columnPosition(initColumn, 2);
                     } else if (currentOpcode.startsWith("DD")) {
+                        System.out.println("DD");
                         instruction = Instruction.findIXTableInstruction(nextOpcode);
                         initRow = Miscellaneous.rowPosition(initRow, initColumn, 1);
                         initColumn = Miscellaneous.columnPosition(initColumn, 1);
                         currentOpcode = Z80App.memoria.m[initRow][initColumn];
                     } else if (currentOpcode.startsWith("FD")) {
+                        System.out.println("FD");
                         instruction = Instruction.findIYTableInstruction(nextOpcode);
                         initRow = Miscellaneous.rowPosition(initRow, initColumn, 1);
                         initColumn = Miscellaneous.columnPosition(initColumn, 1);
                     }else if(currentOpcode.startsWith("ED")){
+                        System.out.println("ED");
                         instruction = Instruction.findMiscTableInstruction(nextOpcode);
                         initRow = Miscellaneous.rowPosition(initRow, initColumn, 1);
                         initColumn = Miscellaneous.columnPosition(initColumn, 1);
                     }else {
+                        System.out.println("MAIN TABLE");
                         instruction = Instruction.findMainTableInstruction(currentOpcode);
                     }
 
@@ -111,55 +118,32 @@ public class DisassemblyController {
                     }
                     System.out.println(instruction);
                     System.out.println("LOOP START ROW = " + initRow + " LOOP START COLUMN = " + initColumn );
-                    if (instruction.endsWith(",N") || instruction.endsWith(" N")|| instruction.endsWith(",D")) {
+                    if (instruction.endsWith(",N") || instruction.endsWith(" N")|| (instruction.contains("J") && instruction.endsWith("D"))) {
                         instruction = instruction.substring(0, instruction.length() - 2);
                         initRow = Miscellaneous.rowPosition(initRow, initColumn, 1);
                         initColumn = Miscellaneous.columnPosition(initColumn, 1);
-                        instruction = instruction + Z80App.memoria.m[initRow][initColumn];
+                        instruction = instruction + " " + Z80App.memoria.m[initRow][initColumn];
                     } else if (instruction.endsWith(",(NN)")) {
                         instruction = instruction.replace("(NN)", "");
                         initRow = Miscellaneous.rowPosition(initRow, initColumn, 2);
                         initColumn = Miscellaneous.columnPosition(initColumn, 2);
-                        int base10Direction = Miscellaneous.calculateOverallStartValue(Z80App.memoria.m[initRow][initColumn]
-                                + Z80App.memoria.m[initRow][(initColumn - 1) % 16]);
-                        int directionColumn = base10Direction%16;
-                        int directionRow = base10Direction/16;
-                        instruction += Z80App.memoria.m[directionRow][directionColumn];
+                        int base16Direction = Miscellaneous.calculateOverallStartValue(Z80App.memoria.m[initRow][initColumn]
+                                + Z80App.memoria.m[Miscellaneous.rowPosition(initRow, initColumn, -1)][Miscellaneous.columnPosition(initColumn, -1)]);
+                        int directionColumn = base16Direction%16;
+                        int directionRow = base16Direction/16;
+                        instruction += " " + Z80App.memoria.m[directionRow][directionColumn];
                     }else if(instruction.endsWith(",NN")) {
                         instruction = instruction.replace(",NN", ", ");
-                        if ((initColumn + 1) % 16 == 0) {
-                            nextRow = 1;
-                        }
-                        if ((initColumn + 2) % 16 <= 1) {
-                            nextRow2 = 1;
-                        }
-                        String base16Direction = Z80App.memoria.m[initRow + nextRow2][(initColumn + 2) % 16]
-                                + Z80App.memoria.m[initRow + nextRow][(initColumn + 1) % 16];
-                        instruction += base16Direction;
-                        if(nextRow == 1){
-                            initRow += 1;
-                            initColumn = 1;
-                        }else if(nextRow2 == 1){
-                            initColumn = 0;
-                            initRow += 1;
-                        }else{
-                            initColumn += 2;
-                        }
-                        nextRow = nextRow2 = 0;
-                    }else if(instruction.endsWith("+D)")){
-                        instruction = instruction.replace("+D)", "");
-                        if (initRow == 2047 && initColumn == 15) {
-                            initRow = 0;
-                            initColumn = 0;
-                            // De llegar al final de una fila, pasamos a la siguiente.
-                        } else if (initColumn == 15) {
-                            initRow += 1;
-                            initColumn = 0;
-                            // Si no ocurre ninguno de los dos casos, pasamos a la siguiente columna.
-                        } else {
-                            initColumn += 1;
-                        }
-                        instruction = instruction + Z80App.memoria.m[initRow][initColumn];
+                        initRow = Miscellaneous.rowPosition(initRow, initColumn, 2);
+                        initColumn = Miscellaneous.columnPosition(initColumn, 2);
+                        String base16Direction = Z80App.memoria.m[initRow][initColumn]
+                                + Z80App.memoria.m[Miscellaneous.rowPosition(initRow, initColumn, -1)][Miscellaneous.columnPosition(initColumn, -1)];
+                        instruction += " " + base16Direction;
+                    }else if(instruction.contains("+D)")){
+                        instruction = instruction.replace("+D", "+");
+                        initRow = Miscellaneous.rowPosition(initRow, initColumn, 1);
+                        initColumn = Miscellaneous.columnPosition(initColumn, 1);
+                        instruction = instruction.replace("+", "+"+Z80App.memoria.m[initRow][initColumn]);
                     }
                     Label label = new Label(instruction);
                     label.setFont(new Font("Courier new", 35));
