@@ -54,8 +54,6 @@ public class DisassemblyController {
             disassemblyVisualizer.getChildren().clear();
             int startDir = Miscellaneous.calculateOverallStartValue(hexField.getText());
             System.out.println("STARTDIR = " + startDir);
-            int nextRow = 0;
-            int nextRow2 = 0;
             String nextOpcode;
             try{
                 if(startDir >= 32768 || startDir <=-1){

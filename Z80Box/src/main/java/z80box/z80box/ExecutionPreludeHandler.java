@@ -47,6 +47,7 @@ public class ExecutionPreludeHandler {
                 if(startDir >= 32768 || startDir <=-1){
                     throw new InvalidHexDirectionException();
                 }
+                Registers.PC = startDir;
                 // Creamos un FXMLLoader que cargará la escena del menú principal.
                 FXMLLoader fxmlLoader = new FXMLLoader(Z80App.class.getResource("Z80ExecutionMenu.fxml"));
                 // Se define el objeto Stage

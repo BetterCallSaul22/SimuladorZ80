@@ -4,8 +4,11 @@ public class Registers {
     // Registros principales
     public int A, B, C, D, E, H, L;
 
+    // Registros de 16 bits
+    public String IX, IY;
+
     // Program Counter y Stack Pointer
-    public int PC, SP;
+    public static int PC, SP;
 
     // Flags
     private boolean Z; // Zero Flag
@@ -14,6 +17,24 @@ public class Registers {
     private boolean P; // Parity/Overflow Flag
     private boolean HC; // Half Carry Flag
     private boolean N; // Subtract Flag
+    private boolean PS; // Positive Flag
+
+    public Registers(){
+        setA(0);
+        setB(0);
+        setC(0);
+        setD(0);
+        setE(0);
+        setH(0);
+        setL(0);
+        setFlagZero(false);
+        setFlagCarry(false);
+        setFlagHalfCarry(false);
+        setFlagSign(false);
+        setFlagParity(false);
+        setFlagSubtract(false);
+        setPositiveFlag(false);
+    }
 
     // Getters y setters para los registros principales
     public int getA() { return A; }
@@ -90,6 +111,30 @@ public class Registers {
 
     public void setFlagSubtract(boolean N) {
         this.N = N;
+    }
+
+    public boolean getPositiveFlag() {
+        return PS;
+    }
+
+    public void setPositiveFlag(boolean PS) {
+        this.PS = PS;
+    }
+
+    public int getIX() {
+        return IX;
+    }
+
+    public void setIX(int IX) {
+        this.IX = IX;
+    }
+
+    public int getIY() {
+        return IY;
+    }
+
+    public void setIY(int IY) {
+        this.IY = IY;
     }
 
     // Método para imprimir el estado de los registros
