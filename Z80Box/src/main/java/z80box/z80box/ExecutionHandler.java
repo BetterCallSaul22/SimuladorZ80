@@ -315,7 +315,7 @@ public class ExecutionHandler {
     // Metodo Decode & Execute: procesar la instrucción
     private void ejecutarInstruccion(String opcode) {
         int[] parametros;
-        int row, column, res, memoryDir, displacement, effectiveAddress;
+        int row, column, res, memoryDir, displacement, effectiveAddress, newVal;
         switch (opcode) {
             case "3E": // LD A, n (inmediato de 8 bits)
                 registers.A = Registers.PC; // Cargar valor en A
@@ -439,7 +439,7 @@ public class ExecutionHandler {
                 registers.A = Integer.parseInt(Z80App.memoria.m[row][column]);
                 System.out.println("EJECUTADO, LD A, (" + memoryDir + ")");
                 break;
-            case "FE":
+            case "FE": // CP N
                 row = Registers.PC/16;
                 column = Registers.PC%16;
                 res = registers.A - Integer.parseInt(Z80App.memoria.m[row][column]);
@@ -536,7 +536,222 @@ public class ExecutionHandler {
                 System.out.println("NO OPERACIÓN");
                 Registers.PC += 1;
                 break;
-
+            case "C3":
+                parametros = decodificarParametros(); // Dirección de 16 bits
+                memoryDir = Miscellaneous.calculateOverallStartValue(String.valueOf(parametros[0]));
+                Registers.PC = memoryDir; // Salta a la dirección especificada
+                System.out.println("Ejecutado: JP a dirección " + parametros[0]);
+                break;
+            case "C6":
+                row = Registers.PC/16;
+                column = Registers.PC%16;
+                registers.A += Integer.parseInt(Z80App.memoria.m[row][column]);
+                System.out.println("OPERACIÓN HECHA, ADD A, " + Z80App.memoria.m[row][column]);
+                Registers.PC += 1;
+                break;
+            case "D2":
+                parametros = decodificarParametros(); // Dirección de 16 bits
+                if (!registers.getFlagCarry()) { // Verifica si el flag de carry no está activo
+                    memoryDir = Miscellaneous.calculateOverallStartValue(String.valueOf(parametros[0]));
+                    Registers.PC = memoryDir; // Salta a la dirección especificada
+                    System.out.println("Ejecutado: JP NC a dirección " + parametros[0]);
+                } else {
+                    System.out.println("Condición no cumplida: No se ejecuta JP NC");
+                }
+                break;
+            case "D3":
+                row = Registers.PC/16;
+                column = Registers.PC%16;
+                newVal = Integer.parseInt(Z80App.memoria.m[row][column]);
+                row = newVal/16;
+                column = newVal%16;
+                Z80App.memoria.m[row][column] = String.valueOf(registers.A);
+                System.out.println("HECHO, OUT (" + newVal + "), A");
+                Registers.PC += 1;
+                break;
+            case "D6":
+                row = Registers.PC/16;
+                column = Registers.PC%16;
+                registers.A -= Integer.parseInt(Z80App.memoria.m[row][column]);
+                System.out.println("OPERACIÓN HECHA, SUB " + Z80App.memoria.m[row][column]);
+                Registers.PC += 1;
+                break;
+            case "DA":
+                parametros = decodificarParametros(); // Dirección de 16 bits
+                if (registers.getFlagCarry()) { // Verifica si el flag de carry está activo
+                    memoryDir = Miscellaneous.calculateOverallStartValue(String.valueOf(parametros[0]));
+                    Registers.PC = memoryDir; // Salta a la dirección especificada
+                    System.out.println("Ejecutado: JP NC a dirección " + parametros[0]);
+                } else {
+                    System.out.println("Condición no cumplida: No se ejecuta JP NC");
+                }
+                break;
+            case "DB":
+                row = Registers.PC/16;
+                column = Registers.PC%16;
+                newVal = Integer.parseInt(Z80App.memoria.m[row][column]);
+                row = newVal/16;
+                column = newVal%16;
+                registers.A = Integer.parseInt(Z80App.memoria.m[row][column]);
+                System.out.println("HECHO, IN (" + newVal + "), A");
+                Registers.PC += 1;
+                break;
+            case "E2":
+                parametros = decodificarParametros(); // Dirección de 16 bits
+                if (!registers.getFlagParity()) { // Verifica si el flag de overflow no está activo
+                    memoryDir = Miscellaneous.calculateOverallStartValue(String.valueOf(parametros[0]));
+                    Registers.PC = memoryDir; // Salta a la dirección especificada
+                    System.out.println("Ejecutado: JP PO a dirección " + parametros[0]);
+                } else {
+                    System.out.println("Condición no cumplida: No se ejecuta JP PO");
+                }
+                break;
+            case "E6":
+                row = Registers.PC/16;
+                column = Registers.PC%16;
+                registers.A = registers.A & Integer.parseInt(Z80App.memoria.m[row][column]);
+                Registers.PC += 1;
+                break;
+            case "EA":
+                parametros = decodificarParametros(); // Dirección de 16 bits
+                if (registers.getFlagParity()) { // Verifica si el flag de overflow está activo
+                    memoryDir = Miscellaneous.calculateOverallStartValue(String.valueOf(parametros[0]));
+                    Registers.PC = memoryDir; // Salta a la dirección especificada
+                    System.out.println("Ejecutado: JP PE a dirección " + parametros[0]);
+                } else {
+                    System.out.println("Condición no cumplida: No se ejecuta JP PE");
+                }
+                break;
+            case "EE":
+                row = Registers.PC/16;
+                column = Registers.PC%16;
+                registers.A = registers.A ^ Integer.parseInt(Z80App.memoria.m[row][column]);
+                Registers.PC += 1;
+                break;
+            case "F6":
+                row = Registers.PC/16;
+                column = Registers.PC%16;
+                registers.A = registers.A | Integer.parseInt(Z80App.memoria.m[row][column]);
+                Registers.PC += 1;
+                break;
+            case "80":
+                registers.A += registers.B;
+                System.out.println("OPERACIÓN HECHA, ADD A, B");
+                break;
+            case "81":
+                registers.A += registers.C;
+                System.out.println("OPERACIÓN HECHA, ADD A, C");
+                break;
+            case "82":
+                registers.A += registers.D;
+                System.out.println("OPERACIÓN HECHA, ADD A, D");
+                break;
+            case "83":
+                registers.A += registers.E;
+                System.out.println("OPERACIÓN HECHA, ADD A, E");
+                break;
+            case "84":
+                registers.A += registers.H;
+                System.out.println("OPERACIÓN HECHA, ADD A, H");
+                break;
+            case "85":
+                registers.A += registers.L;
+                System.out.println("OPERACIÓN HECHA, ADD A, L");
+                break;
+            case "87":
+                registers.A += registers.A;
+                System.out.println("OPERACIÓN HECHA, ADD A, A");
+                break;
+            case "90":
+                registers.A -= registers.B;
+                System.out.println("OPERACIÓN HECHA, SUB B");
+                break;
+            case "91":
+                registers.A -= registers.C;
+                System.out.println("OPERACIÓN HECHA, SUB C");
+                break;
+            case "92":
+                registers.A -= registers.D;
+                System.out.println("OPERACIÓN HECHA, SUB D");
+                break;
+            case "93":
+                registers.A -= registers.E;
+                System.out.println("OPERACIÓN HECHA, SUB E");
+                break;
+            case "94":
+                registers.A -= registers.H;
+                System.out.println("OPERACIÓN HECHA, SUB H");
+                break;
+            case "95":
+                registers.A -= registers.L;
+                System.out.println("OPERACIÓN HECHA, SUB L");
+                break;
+            case "97":
+                registers.A -= registers.A;
+                System.out.println("OPERACIÓN HECHA, SUB A");
+                break;
+            case "A0":
+                break;
+            case "A1":
+                break;
+            case "A2":
+                break;
+            case "A3":
+                break;
+            case "A4":
+                break;
+            case "A5":
+                break;
+            case "A6":
+                break;
+            case "A7":
+                break;
+            case "A8":
+                break;
+            case "A9":
+                break;
+            case "AA":
+                break;
+            case "AB":
+                break;
+            case "AC":
+                break;
+            case "AD":
+                break;
+            case "AE":
+                break;
+            case "AF":
+                break;
+            case "B0":
+                break;
+            case "B1":
+                break;
+            case "B2":
+                break;
+            case "B3":
+                break;
+            case "B4":
+                break;
+            case "B5":
+                break;
+            case "B6":
+                break;
+            case "B7":
+                break;
+            case "B8":
+                break;
+            case "B9":
+                break;
+            case "BA":
+                break;
+            case "BB":
+                break;
+            case "BC":
+                break;
+            case "BD":
+                break;
+            case "BE":
+                break;
             default:
                 System.out.println("Instrucción no soportada: " + opcode);
         }
