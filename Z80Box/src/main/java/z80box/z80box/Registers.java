@@ -27,6 +27,8 @@ public class Registers {
         setE(0);
         setH(0);
         setL(0);
+        setIX("0000");
+        setIY("0000");
         setFlagZero(false);
         setFlagCarry(false);
         setFlagHalfCarry(false);
@@ -121,19 +123,19 @@ public class Registers {
         this.PS = PS;
     }
 
-    public int getIX() {
+    public String getIX() {
         return IX;
     }
 
-    public void setIX(int IX) {
+    public void setIX(String IX) {
         this.IX = IX;
     }
 
-    public int getIY() {
+    public String getIY() {
         return IY;
     }
 
-    public void setIY(int IY) {
+    public void setIY(String IY) {
         this.IY = IY;
     }
 

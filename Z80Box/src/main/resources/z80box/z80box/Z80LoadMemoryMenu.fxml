@@ -53,7 +53,7 @@
             <Font name="Lucida Console" size="40.0" />
          </font>
       </Label>
-      <Label text="Escape: Salir sin guardar" textFill="HOTPINK">
+      <Label text="Escape: Salir" textFill="HOTPINK">
          <font>
             <Font name="Lucida Console" size="40.0" />
          </font>
