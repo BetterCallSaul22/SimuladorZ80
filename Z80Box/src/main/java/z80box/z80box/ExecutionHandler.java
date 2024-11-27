@@ -34,17 +34,22 @@ public class ExecutionHandler {
     @FXML
     Pagination memoryPaginator;
 
-    public static int currentPage = 0;
+    public static int currentPage = MemoryHandlingController.currentPage;
 
     Registers registers = new Registers();
 
     @FXML
     Label registerAVal, registerBVal, registerCVal, registerDVal, registerEVal, registerHVal, registerLVal,
-    registerIXVal, registerIYVal, zeroFlag, carryFlag, signFlag, parityFlag, halfCarryFlag, subtractFlag, positiveFlag, PCDisplay;
+    registerIXVal, registerIYVal, instructionDisplay, sFlag, zFlag, hFlag, pFlag, nFlag, cFlag;
+
+    @FXML
+    TextField PCDisplay;
+
+    public static String execMode;
 
     @FXML
     // Metodo que nos permitirá regresar al menú principal de ser necesario.
-    public void keyEventHandler(KeyEvent event) throws IOException {
+    public void keyEventHandler(KeyEvent event) throws IOException, InterruptedException {
         // El evento solo toma lugar si la tecla presionada es la de escape.
         if(event.getCode() == KeyCode.ESCAPE){
             // Creamos un FXMLLoader que cargará la escena del menú principal.
@@ -59,24 +64,89 @@ public class ExecutionHandler {
             stage.setScene(scene);
             // Mostramos la escena.
             stage.show();
-        }else if(event.getCode() == KeyCode.ENTER && !Objects.equals(fetchOpcodeRevise(), "76")){
+        }else if(Objects.equals(execMode, "F") && event.getCode() == KeyCode.ENTER && !Objects.equals(fetchOpcodeRevise(), "76")){
+            do{
+                ejecutarCiclo();
+                registerAVal.setText(Integer.toHexString(registers.A));
+                registerBVal.setText(Integer.toHexString(registers.B));
+                registerCVal.setText(Integer.toHexString(registers.C));
+                registerDVal.setText(Integer.toHexString(registers.D));
+                registerEVal.setText(Integer.toHexString(registers.E));
+                registerHVal.setText(Integer.toHexString(registers.H));
+                registerLVal.setText(Integer.toHexString(registers.L));
+                registerIXVal.setText(registers.IX);
+                registerIYVal.setText(registers.IY);
+                sFlag.setText(registers.getFlagSign() ? "1" : "0");
+                zFlag.setText(registers.getFlagZero() ? "1" : "0");
+                hFlag.setText(registers.getFlagHalfCarry() ? "1" : "0");
+                pFlag.setText(registers.getFlagParity() ? "1" : "0");
+                nFlag.setText(registers.getFlagSubtract() ? "1" :"0");
+                sFlag.setText(registers.getFlagSign() ? "1" : "0");
+                cFlag.setText(registers.getFlagCarry() ? "1" : "0");
+
+                memoryVisualizer.getChildren().clear();
+                //  Comenzamos con un ciclo for anidado para llenar todos los espacios.
+                for(int i=0;i<33;i++){
+                    for(int j=0;j<17;j++){
+                        // Dejamos un espacio libre en la esquina izquierda.
+                        if(i==0 && j == 0){
+                            j+=1;
+                        }
+                        // Condicional que nos permite poner los valores unitarios en la fila superior.
+                        if(i==0){
+                            // Creamos un nuevo cuadro de texto
+                            Label label = new Label(String.valueOf(j-1));
+                            // Convertimos a hexadecimal en el caso de 10 hasta 15.
+                            if(j>10){
+                                label.setText(Miscellaneous.returnHexEquivalent(j-1));
+                            }
+                            // Monerías visuales.
+                            label.setTextFill(Color.HOTPINK);
+                            label.setAlignment(Pos.CENTER);
+                            // Añadimos el texto al cuadro que tenemos.
+                            memoryVisualizer.add(label, j, i);
+                        }
+                        // Condicional que nos permite poner los valores mayores en la columna izquierda.
+                        if(j==0){
+                            // Utilizamos current page para multiplicar a i con una ecuación que nos permite
+                            // poner el valor correspondiente de cada fila en el Label.
+                            Label label = new Label(String.format("%04X", (512*currentPage)+((i-1)*16)));
+                            label.setTextFill(Color.HOTPINK);
+                            // Añadimos el label.
+                            memoryVisualizer.add(label, j, i);
+                        }
+                        // En esta condicional, ya ponemos los valores de la memoria que nos competen como tal.
+                        if(j!=0 && i != 0){
+                            // Creamos un campo de texto que el usuario podrá personalizar.
+                            TextField textField = new TextField(memoria.m[(32*currentPage)+(i-1)][(j-1)]);
+                            // Monerías visuales.
+                            textField.setBackground(new Background(new BackgroundFill(Color.HOTPINK, null, null)));
+                            textField.setAlignment(Pos.CENTER);
+                            // Añadimos el campo de texto.
+                            memoryVisualizer.add(textField, j, i);
+                        }
+                    }
+                }
+
+            }while(!Objects.equals(fetchOpcodeRevise(), "76"));
+        }else if(event.getCode() == KeyCode.ENTER && !Objects.equals(fetchOpcodeRevise(), "76") && Objects.equals(execMode, "S")){
             ejecutarCiclo();
-            registerAVal.setText(String.valueOf(registers.A));
-            registerBVal.setText(String.valueOf(registers.B));
-            registerCVal.setText(String.valueOf(registers.C));
-            registerDVal.setText(String.valueOf(registers.D));
-            registerEVal.setText(String.valueOf(registers.E));
-            registerHVal.setText(String.valueOf(registers.H));
-            registerLVal.setText(String.valueOf(registers.L));
+            registerAVal.setText(Integer.toHexString(registers.A));
+            registerBVal.setText(Integer.toHexString(registers.B));
+            registerCVal.setText(Integer.toHexString(registers.C));
+            registerDVal.setText(Integer.toHexString(registers.D));
+            registerEVal.setText(Integer.toHexString(registers.E));
+            registerHVal.setText(Integer.toHexString(registers.H));
+            registerLVal.setText(Integer.toHexString(registers.L));
             registerIXVal.setText(registers.IX);
             registerIYVal.setText(registers.IY);
-            zeroFlag.setText(registers.getFlagZero() ? "1" : "0");
-            carryFlag.setText(registers.getFlagCarry() ? "1" : "0");
-            signFlag.setText(registers.getFlagSign() ? "1" : "0");
-            parityFlag.setText(registers.getFlagParity() ? "1" : "0");
-            halfCarryFlag.setText(registers.getFlagHalfCarry() ? "1" : "0");
-            subtractFlag.setText(registers.getFlagSubtract() ? "1" : "0");
-            positiveFlag.setText(registers.getPositiveFlag() ? "1" : "0");
+            sFlag.setText(registers.getFlagSign() ? "1" : "0");
+            zFlag.setText(registers.getFlagZero() ? "1" : "0");
+            hFlag.setText(registers.getFlagHalfCarry() ? "1" : "0");
+            pFlag.setText(registers.getFlagParity() ? "1" : "0");
+            nFlag.setText(registers.getFlagSubtract() ? "1" :"0");
+            sFlag.setText(registers.getFlagSign() ? "1" : "0");
+            cFlag.setText(registers.getFlagCarry() ? "1" : "0");
 
             memoryVisualizer.getChildren().clear();
             //  Comenzamos con un ciclo for anidado para llenar todos los espacios.
@@ -220,6 +290,7 @@ public class ExecutionHandler {
             }
         }
 
+
     }
 
     public boolean getNoCode(int row, int column){
@@ -275,7 +346,7 @@ public class ExecutionHandler {
     public void ejecutarCiclo() {
         String opcode = fetchOpcode(); // Leer el opcode
 
-        PCDisplay.setText(opcode);
+        PCDisplay.setPromptText(String.format("%04X", Registers.PC));
 
         // Decodificar y ejecutar la instrucción
         ejecutarInstruccion(opcode);
@@ -320,12 +391,12 @@ public class ExecutionHandler {
             case "3E": // LD A, n (inmediato de 8 bits)
                 registers.A = Registers.PC; // Cargar valor en A
                 Registers.PC += 1;
-                System.out.println("Ejecutado: LD A, " + registers.A);
+                instructionDisplay.setText("Ejecutado: LD A, " + registers.A);
                 break;
             case "7E": // LD A, (N lugar de memoria)
                 parametros = decodificarParametros();
                 registers.A = parametros[0]; // Cargar valor en A
-                System.out.println("Ejecutado: LD A, " + registers.A);
+                instructionDisplay.setText("Ejecutado: LD A, " + registers.A);
                 break;
             case "BF": // CP A, N
                 parametros = decodificarParametros();
@@ -339,62 +410,62 @@ public class ExecutionHandler {
                 if (res > 0){
                     registers.setPositiveFlag(true);
                 }
-                System.out.println("EJECUTADO: CP A, " + res);
+                instructionDisplay.setText("EJECUTADO: CP A, " + res);
                 break;
             case "4F": // LD C, A (inmediato de 8 bits)
                 registers.C = registers.A; // Cargar valor en A
-                System.out.println("Ejecutado: LD C, A");
+                instructionDisplay.setText("Ejecutado: LD C, A");
                 break;
             case "0D": // DEC C
                 registers.C--;
-                System.out.println("EJECUTADO: DEC C");
+                instructionDisplay.setText("EJECUTADO: DEC C");
                 break;
             case "51": // LD D, C (inmediato de 8 bits)
                 registers.D = registers.C; // Cargar valor en A
-                System.out.println("Ejecutado: LD D, C");
+                instructionDisplay.setText("Ejecutado: LD D, C");
                 break;
             case "06": // LD B, n (inmediato de 8 bits)
                 row = Registers.PC/16;
                 column = Registers.PC%16;
                 registers.B = Integer.parseInt(Z80App.memoria.m[row][column]); // Cargar valor en A
                 Registers.PC += 1;
-                System.out.println("Ejecutado: LD B, " + registers.B);
+                instructionDisplay.setText("Ejecutado: LD B, " + registers.B);
                 break;
             case "1E": // LD E, n (inmediato de 8 bits)
                 row = Registers.PC/16;
                 column = Registers.PC%16;
                 registers.E = Integer.parseInt(Z80App.memoria.m[row][column]); // Cargar valor en A
                 Registers.PC += 1;
-                System.out.println("Ejecutado: LD E, " + registers.E);
+                instructionDisplay.setText("LD E, " + registers.E);
                 break;
             case "04": // INC B
                 registers.B++;
-                System.out.println("EJECUTADO: B = " + registers.B);
+                instructionDisplay.setText("B = " + registers.B);
                 break;
             case "15": // DEC D
                 registers.D --;
-                System.out.println("EJECUTADO: DEC D");
+                instructionDisplay.setText("DEC D");
                 break;
             case "7A": // LD A, D (inmediato de 8 bits)
                 registers.A = registers.D; // Cargar valor en A
-                System.out.println("Ejecutado: LD A, D");
+                instructionDisplay.setText("LD A, D");
                 break;
             case "7B": // LD A, E (inmediato de 8 bits)
                 registers.A = registers.E; // Cargar valor en A
-                System.out.println("Ejecutado: LD A, E");
+                instructionDisplay.setText("LD A, E");
                 break;
             case "79": // LD A, C (inmediato de 8 bits)
                 registers.A = registers.C; // Cargar valor en A
-                System.out.println("Ejecutado: LD A, C");
+                instructionDisplay.setText("LD A, C");
                 break;
             case "FA": // JP M, nn (salto si flag S está establecido)
                 parametros = decodificarParametros(); // Dirección de 16 bits
                 if (registers.getFlagSign()) { // Verifica si el flag de signo está activo
                     memoryDir = Miscellaneous.calculateOverallStartValue(String.valueOf(parametros[0]));
                     Registers.PC = memoryDir; // Salta a la dirección especificada
-                    System.out.println("Ejecutado: JP M a dirección " + parametros[0]);
+                    instructionDisplay.setText("JP M " + parametros[0]);
                 } else {
-                    System.out.println("Condición no cumplida: No se ejecuta JP M");
+                    instructionDisplay.setText("No JP M");
                 }
                 break;
             case "F2": // JP P, nn (salto si flag S no está establecido)
@@ -402,9 +473,9 @@ public class ExecutionHandler {
                 if (!registers.getFlagSign()) { // Verifica si el flag de signo está inactivo
                     memoryDir = Miscellaneous.calculateOverallStartValue(String.valueOf(parametros[0]));
                     Registers.PC = memoryDir; // Salta a la dirección especificada
-                    System.out.println("Ejecutado: JP P a dirección " + parametros[0]);
+                    instructionDisplay.setText("JP P " + parametros[0]);
                 } else {
-                    System.out.println("Condición no cumplida: No se ejecuta JP P");
+                    instructionDisplay.setText("No JP P");
                 }
                 break;
             case "C2": // JP NZ, nn (salto si flag Z no está establecido)
@@ -412,9 +483,9 @@ public class ExecutionHandler {
                 if (!registers.getFlagZero()) { // Verifica si el flag de signo está inactivo
                     memoryDir = Miscellaneous.calculateOverallStartValue(String.valueOf(parametros[0]));
                     Registers.PC = memoryDir; // Salta a la dirección especificada
-                    System.out.println("Ejecutado: JP NZ a dirección " + parametros[0]);
+                    instructionDisplay.setText("JP NZ " + parametros[0]);
                 } else {
-                    System.out.println("Condición no cumplida: No se ejecuta JP NZ");
+                    instructionDisplay.setText("No JP NZ");
                 }
                 break;
             case "CA": // JP Z, nn (salto si flag Z está establecido)
@@ -422,14 +493,14 @@ public class ExecutionHandler {
                 if (registers.getFlagZero()) { // Verifica si el flag de signo está inactivo
                     memoryDir = Miscellaneous.calculateOverallStartValue(String.valueOf(parametros[0]));
                     Registers.PC = memoryDir; // Salta a la dirección especificada
-                    System.out.println("Ejecutado: JP Z a dirección " + parametros[0]);
+                    instructionDisplay.setText("JP Z " + parametros[0]);
                 } else {
-                    System.out.println("Condición no cumplida: No se ejecuta JP Z");
+                    instructionDisplay.setText("No JP Z");
                 }
                 break;
             case "DD23": //Incrementar IX
                 registers.IX = String.valueOf(Integer.parseInt(registers.IX) + 1);
-                System.out.println("EJECUTADO, INC IX");
+                instructionDisplay.setText("INC IX");
                 break;
             case "3A": // LD A, (NN)
                 parametros = decodificarParametros();
@@ -437,13 +508,13 @@ public class ExecutionHandler {
                 row = memoryDir/16;
                 column = memoryDir%16;
                 registers.A = Integer.parseInt(Z80App.memoria.m[row][column]);
-                System.out.println("EJECUTADO, LD A, (" + memoryDir + ")");
+                instructionDisplay.setText("LD A, (" + memoryDir + ")");
                 break;
             case "FE": // CP N
                 row = Registers.PC/16;
                 column = Registers.PC%16;
                 res = registers.A - Integer.parseInt(Z80App.memoria.m[row][column]);
-                System.out.println(res);
+                instructionDisplay.setText("CP " + String.valueOf(res));
                 registers.setFlagSign(res < 0);
                 registers.setFlagZero(res == 0);
                 registers.setPositiveFlag(res > 0);
@@ -452,7 +523,7 @@ public class ExecutionHandler {
             case "DD21":
                 parametros = decodificarParametros();
                 registers.IX = String.valueOf(parametros[0]);
-                System.out.println("Ejecutado, IX = " + registers.IX);
+                instructionDisplay.setText("IX = " + registers.IX);
                 break;
             case "DD7E": // LD A, (IX + d)
                 row = Registers.PC/16;
@@ -462,7 +533,7 @@ public class ExecutionHandler {
                 row = effectiveAddress / 16;
                 column = effectiveAddress % 16;
                 registers.A = Integer.parseInt(Z80App.memoria.m[row][column], 16); // Leer memoria
-                System.out.println("Ejecutado: LD A, (IX + " + displacement + ")");
+                instructionDisplay.setText("LD A, (IX + " + displacement + ")");
                 Registers.PC += 1;
                 break;
             case "DDBE": // CP (IX+D)
@@ -487,7 +558,7 @@ public class ExecutionHandler {
                 row = effectiveAddress / 16;
                 column = effectiveAddress % 16;
                 registers.H = Integer.parseInt(Z80App.memoria.m[row][column], 16); // Leer memoria
-                System.out.println("Ejecutado: LD H, (IX + " + displacement + ")");
+                instructionDisplay.setText("LD H, (IX + " + displacement + ")");
                 Registers.PC += 1;
                 break;
             case "DD74": // LD (IX + d), H
@@ -496,7 +567,7 @@ public class ExecutionHandler {
                 row = effectiveAddress / 16;
                 column = effectiveAddress % 16;
                 Z80App.memoria.m[row][column] = String.format("%02X", registers.H); // Escribir memoria
-                System.out.println("Ejecutado: LD (IX + " + displacement + "), H");
+                instructionDisplay.setText("LD (IX + " + displacement + "), H");
                 break;
             case "DD77": // LD (IX + d), A
                 displacement = Integer.parseInt(fetchOpcode(), 16); // Leer desplazamiento d
@@ -504,7 +575,7 @@ public class ExecutionHandler {
                 row = effectiveAddress / 16;
                 column = effectiveAddress % 16;
                 Z80App.memoria.m[row][column] = String.format("%02X", registers.A); // Escribir memoria
-                System.out.println("Ejecutado: LD (IX + " + displacement + "), A");
+                instructionDisplay.setText("LD (IX + " + displacement + "), A");
                 break;
             case "DD36": // LD (IX + d), N
                 displacement = Integer.parseInt(fetchOpcode(), 16); // Leer desplazamiento d
@@ -512,7 +583,7 @@ public class ExecutionHandler {
                 row = effectiveAddress / 16;
                 column = effectiveAddress % 16;
                 Z80App.memoria.m[row][column] = String.format("%02X", registers.H); // Escribir memoria
-                System.out.println("Ejecutado: LD (IX + " + displacement + "), H");
+                instructionDisplay.setText("LD (IX + " + displacement + "), H");
                 Registers.PC += 1;
                 break;
             case "18": // JR d (salto relativo)
@@ -530,23 +601,23 @@ public class ExecutionHandler {
                 // Ajustar el PC al realizar el salto
                 Registers.PC += offset;
 
-                System.out.println("Ejecutado: JR " + offset + ", nueva dirección PC: " + Integer.toHexString(Registers.PC));
+                instructionDisplay.setText("JR " + offset);
                 break;
             case "00":
-                System.out.println("NO OPERACIÓN");
+                instructionDisplay.setText("NO OPERACIÓN");
                 Registers.PC += 1;
                 break;
             case "C3":
                 parametros = decodificarParametros(); // Dirección de 16 bits
                 memoryDir = Miscellaneous.calculateOverallStartValue(String.valueOf(parametros[0]));
                 Registers.PC = memoryDir; // Salta a la dirección especificada
-                System.out.println("Ejecutado: JP a dirección " + parametros[0]);
+                instructionDisplay.setText("JP " + parametros[0]);
                 break;
             case "C6":
                 row = Registers.PC/16;
                 column = Registers.PC%16;
                 registers.A += Integer.parseInt(Z80App.memoria.m[row][column]);
-                System.out.println("OPERACIÓN HECHA, ADD A, " + Z80App.memoria.m[row][column]);
+                instructionDisplay.setText("ADD A, " + Z80App.memoria.m[row][column]);
                 Registers.PC += 1;
                 break;
             case "D2":
@@ -554,9 +625,9 @@ public class ExecutionHandler {
                 if (!registers.getFlagCarry()) { // Verifica si el flag de carry no está activo
                     memoryDir = Miscellaneous.calculateOverallStartValue(String.valueOf(parametros[0]));
                     Registers.PC = memoryDir; // Salta a la dirección especificada
-                    System.out.println("Ejecutado: JP NC a dirección " + parametros[0]);
+                    instructionDisplay.setText("JP NC " + parametros[0]);
                 } else {
-                    System.out.println("Condición no cumplida: No se ejecuta JP NC");
+                    instructionDisplay.setText("No JP NC");
                 }
                 break;
             case "D3":
@@ -566,14 +637,14 @@ public class ExecutionHandler {
                 row = newVal/16;
                 column = newVal%16;
                 Z80App.memoria.m[row][column] = String.valueOf(registers.A);
-                System.out.println("HECHO, OUT (" + newVal + "), A");
+                instructionDisplay.setText("OUT (" + newVal + "), A");
                 Registers.PC += 1;
                 break;
             case "D6":
                 row = Registers.PC/16;
                 column = Registers.PC%16;
                 registers.A -= Integer.parseInt(Z80App.memoria.m[row][column]);
-                System.out.println("OPERACIÓN HECHA, SUB " + Z80App.memoria.m[row][column]);
+                instructionDisplay.setText("SUB " + Z80App.memoria.m[row][column]);
                 Registers.PC += 1;
                 break;
             case "DA":
@@ -581,9 +652,9 @@ public class ExecutionHandler {
                 if (registers.getFlagCarry()) { // Verifica si el flag de carry está activo
                     memoryDir = Miscellaneous.calculateOverallStartValue(String.valueOf(parametros[0]));
                     Registers.PC = memoryDir; // Salta a la dirección especificada
-                    System.out.println("Ejecutado: JP NC a dirección " + parametros[0]);
+                    instructionDisplay.setText("JP NC " + parametros[0]);
                 } else {
-                    System.out.println("Condición no cumplida: No se ejecuta JP NC");
+                    instructionDisplay.setText("No JP NC");
                 }
                 break;
             case "DB":
@@ -593,7 +664,7 @@ public class ExecutionHandler {
                 row = newVal/16;
                 column = newVal%16;
                 registers.A = Integer.parseInt(Z80App.memoria.m[row][column]);
-                System.out.println("HECHO, IN (" + newVal + "), A");
+                instructionDisplay.setText("IN (" + newVal + "), A");
                 Registers.PC += 1;
                 break;
             case "E2":
@@ -601,9 +672,9 @@ public class ExecutionHandler {
                 if (!registers.getFlagParity()) { // Verifica si el flag de overflow no está activo
                     memoryDir = Miscellaneous.calculateOverallStartValue(String.valueOf(parametros[0]));
                     Registers.PC = memoryDir; // Salta a la dirección especificada
-                    System.out.println("Ejecutado: JP PO a dirección " + parametros[0]);
+                    instructionDisplay.setText("JP PO " + parametros[0]);
                 } else {
-                    System.out.println("Condición no cumplida: No se ejecuta JP PO");
+                    instructionDisplay.setText("No JP PO");
                 }
                 break;
             case "E6":
@@ -611,15 +682,16 @@ public class ExecutionHandler {
                 column = Registers.PC%16;
                 registers.A = registers.A & Integer.parseInt(Z80App.memoria.m[row][column]);
                 Registers.PC += 1;
+                instructionDisplay.setText("AND A");
                 break;
             case "EA":
                 parametros = decodificarParametros(); // Dirección de 16 bits
                 if (registers.getFlagParity()) { // Verifica si el flag de overflow está activo
                     memoryDir = Miscellaneous.calculateOverallStartValue(String.valueOf(parametros[0]));
                     Registers.PC = memoryDir; // Salta a la dirección especificada
-                    System.out.println("Ejecutado: JP PE a dirección " + parametros[0]);
+                    instructionDisplay.setText("JP PE " + parametros[0]);
                 } else {
-                    System.out.println("Condición no cumplida: No se ejecuta JP PE");
+                    System.out.println("No JP PE");
                 }
                 break;
             case "EE":
@@ -627,20 +699,22 @@ public class ExecutionHandler {
                 column = Registers.PC%16;
                 registers.A = registers.A ^ Integer.parseInt(Z80App.memoria.m[row][column]);
                 Registers.PC += 1;
+                instructionDisplay.setText("XOR A");
                 break;
             case "F6":
                 row = Registers.PC/16;
                 column = Registers.PC%16;
                 registers.A = registers.A | Integer.parseInt(Z80App.memoria.m[row][column]);
                 Registers.PC += 1;
+                instructionDisplay.setText("OR A");
                 break;
             case "80":
                 registers.A += registers.B;
-                System.out.println("OPERACIÓN HECHA, ADD A, B");
+                instructionDisplay.setText("ADD A, B");
                 break;
             case "81":
                 registers.A += registers.C;
-                System.out.println("OPERACIÓN HECHA, ADD A, C");
+                instructionDisplay.setText("ADD A, C");
                 break;
             case "82":
                 registers.A += registers.D;
@@ -690,70 +764,95 @@ public class ExecutionHandler {
                 registers.A -= registers.A;
                 System.out.println("OPERACIÓN HECHA, SUB A");
                 break;
-            case "A0":
+            case "C1": // POP BC
+                row = Registers.SP/16;
+                column = Registers.SP%16;
+                registers.C = Integer.parseInt(Z80App.memoria.m[row][column]);
+                Registers.SP += 1;
+                row = Registers.SP/16;
+                column = Registers.SP%16;
+                registers.B = Integer.parseInt(Z80App.memoria.m[row][column]);
+                Registers.SP += 1;
+                instructionDisplay.setText("POP BC");
                 break;
-            case "A1":
+            case "C5": // PUSH BC
+                row = Registers.SP/16;
+                column = Registers.SP%16;
+                Z80App.memoria.m[row][column] = String.valueOf(registers.B);
+                Registers.SP -= 1;
+                row = Registers.SP/16;
+                column = Registers.SP%16;
+                Z80App.memoria.m[row][column] = String.valueOf(registers.C);
+                Registers.SP -= 1;
+                instructionDisplay.setText("PUSH BC");
                 break;
-            case "A2":
+            case "D1": // POP DE
+                row = Registers.SP/16;
+                column = Registers.SP%16;
+                registers.E = Integer.parseInt(Z80App.memoria.m[row][column]);
+                Registers.SP += 1;
+                row = Registers.SP/16;
+                column = Registers.SP%16;
+                registers.D = Integer.parseInt(Z80App.memoria.m[row][column]);
+                Registers.SP += 1;
+                instructionDisplay.setText("POP DE");
                 break;
-            case "A3":
+            case "D5": // PUSH DE
+                row = Registers.SP/16;
+                column = Registers.SP%16;
+                Z80App.memoria.m[row][column] = String.valueOf(registers.D);
+                Registers.SP -= 1;
+                row = Registers.SP/16;
+                column = Registers.SP%16;
+                Z80App.memoria.m[row][column] = String.valueOf(registers.E);
+                Registers.SP -= 1;
+                instructionDisplay.setText("PUSH DE");
                 break;
-            case "A4":
+            case "E1": // POP HL
+                row = Registers.SP/16;
+                column = Registers.SP%16;
+                registers.L = Integer.parseInt(Z80App.memoria.m[row][column]);
+                Registers.SP += 1;
+                row = Registers.SP/16;
+                column = Registers.SP%16;
+                registers.H = Integer.parseInt(Z80App.memoria.m[row][column]);
+                Registers.SP += 1;
+                instructionDisplay.setText("POP BC");
                 break;
-            case "A5":
+            case "E5": // PUSH HL
+                row = Registers.SP/16;
+                column = Registers.SP%16;
+                Z80App.memoria.m[row][column] = String.valueOf(registers.H);
+                Registers.SP -= 1;
+                row = Registers.SP/16;
+                column = Registers.SP%16;
+                Z80App.memoria.m[row][column] = String.valueOf(registers.L);
+                Registers.SP -= 1;
+                instructionDisplay.setText("PUSH BC");
                 break;
-            case "A6":
+            case "C4": // CALL NZ, NN
                 break;
-            case "A7":
-                break;
-            case "A8":
-                break;
-            case "A9":
-                break;
-            case "AA":
-                break;
-            case "AB":
-                break;
-            case "AC":
-                break;
-            case "AD":
-                break;
-            case "AE":
-                break;
-            case "AF":
-                break;
-            case "B0":
-                break;
-            case "B1":
-                break;
-            case "B2":
-                break;
-            case "B3":
-                break;
-            case "B4":
-                break;
-            case "B5":
-                break;
-            case "B6":
-                break;
-            case "B7":
-                break;
-            case "B8":
-                break;
-            case "B9":
-                break;
-            case "BA":
-                break;
-            case "BB":
-                break;
-            case "BC":
-                break;
-            case "BD":
-                break;
-            case "BE":
-                break;
+
             default:
                 System.out.println("Instrucción no soportada: " + opcode);
+        }
+    }
+
+    public void updatePC(KeyEvent event){
+        if(event.getCode() == KeyCode.ENTER){
+            try{
+                String s = PCDisplay.getText();
+                int newPC = Integer.parseInt(s);
+                if(newPC >= 32768 || newPC <= -1){
+                    throw new InvalidHexDirectionException();
+                }
+                Registers.PC = newPC;
+                PCDisplay.setPromptText(String.format("%04X", Registers.PC));
+            }catch(InvalidHexDirectionException ignored){
+
+            }finally{
+                PCDisplay.clear();
+            }
         }
     }
 }

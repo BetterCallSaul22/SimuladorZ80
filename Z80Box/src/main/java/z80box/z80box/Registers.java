@@ -12,11 +12,11 @@ public class Registers {
 
     // Flags
     private boolean Z; // Zero Flag
-    private boolean CF; // Carry Flag
-    private boolean S; // Sign Flag
+    private boolean CF; // Carry Flag 0
+    private boolean S; // Sign Flag 7
     private boolean P; // Parity/Overflow Flag
     private boolean HC; // Half Carry Flag
-    private boolean N; // Subtract Flag
+    private boolean N; // Subtract Flag 1
     private boolean PS; // Positive Flag
 
     public Registers(){
@@ -29,6 +29,7 @@ public class Registers {
         setL(0);
         setIX("0000");
         setIY("0000");
+        setSP(32767);
         setFlagZero(false);
         setFlagCarry(false);
         setFlagHalfCarry(false);

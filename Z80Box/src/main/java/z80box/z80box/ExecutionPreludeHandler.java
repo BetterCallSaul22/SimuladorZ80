@@ -4,12 +4,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-
+import javafx.event.ActionEvent;
 import java.io.IOException;
 
 public class ExecutionPreludeHandler {
@@ -17,6 +18,9 @@ public class ExecutionPreludeHandler {
     Label errorDisplayer;
     @FXML
     TextField hexField;
+
+    @FXML
+    Button freeRun, stepByStep;
 
     @FXML
     // Metodo que nos permitirá regresar al menú principal de ser necesario.
@@ -38,8 +42,9 @@ public class ExecutionPreludeHandler {
         }
     }
 
-    public void goOntoExecution(KeyEvent event){
-        if(!hexField.getText().isEmpty() && event.getCode() == KeyCode.ENTER){
+    @FXML
+    public void goOntoExecution (ActionEvent event){
+        if(!hexField.getText().isEmpty()){
             try{
                 // Calculamos el valor donde comenzamos a escribir en memoria.
                 int startDir = Miscellaneous.calculateOverallStartValue(hexField.getText());
@@ -48,6 +53,11 @@ public class ExecutionPreludeHandler {
                     throw new InvalidHexDirectionException();
                 }
                 Registers.PC = startDir;
+                if(event.getSource() == freeRun){
+                    ExecutionHandler.execMode = "F";
+                }else if(event.getSource() == stepByStep){
+                    ExecutionHandler.execMode = "S";
+                }
                 // Creamos un FXMLLoader que cargará la escena del menú principal.
                 FXMLLoader fxmlLoader = new FXMLLoader(Z80App.class.getResource("Z80ExecutionMenu.fxml"));
                 // Se define el objeto Stage
