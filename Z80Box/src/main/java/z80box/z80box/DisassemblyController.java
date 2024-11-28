@@ -145,6 +145,7 @@ public class DisassemblyController {
                     }
                     Label label = new Label(instruction);
                     label.setFont(new Font("Courier new", 35));
+
                     disassemblyVisualizer.getChildren().add(label);
 
                     if (initRow == 2047 && initColumn == 15) {
@@ -162,6 +163,7 @@ public class DisassemblyController {
                     System.out.println("CURRENT COLUMN = " + initColumn);
 
                 }while(!getNoCode(initRow, initColumn));
+                disassemblyVisualizer.getChildren().remove(disassemblyVisualizer.getChildren().getLast());
                 errorDisplayer.setText("");
             }catch(InvalidHexDirectionException e){
                 errorDisplayer.setText("La dirección introducida es incorrecta.");

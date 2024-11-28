@@ -268,7 +268,7 @@
                         <Font size="24.0" />
                      </font>
                   </Label>
-                  <Label text="7FFF" textFill="HOTPINK" GridPane.columnIndex="1" GridPane.rowIndex="9">
+                  <Label text="7FFF" textFill="HOTPINK" GridPane.columnIndex="1" GridPane.rowIndex="9" fx:id="registerSPVal">
                      <font>
                         <Font size="24.0" />
                      </font>
@@ -285,7 +285,7 @@
                   <Font name="Courier New Bold" size="37.0" />
                </font>
             </Label>
-            <TextField alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="38.0" prefWidth="90.0" promptText="0000" style="-fx-background-color: hotpink;" fx:id="PCDisplay">
+            <TextField alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="38.0" prefWidth="90.0" promptText="0000" style="-fx-background-color: hotpink;" fx:id="PCDisplay" onKeyPressed="#updatePC">
                <font>
                   <Font name="System Bold" size="21.0" />
                </font>
